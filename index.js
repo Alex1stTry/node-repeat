@@ -45,13 +45,11 @@ app.delete('/users/:id', async (req, res) => {
     try {
         const users = await reader()
         const userId = +req.params.id;
-        console.log(users)
         const userIndex = users.findIndex(user => user.id === userId)
         if (userIndex === -1) {
             return res.status(404).json('User not found')
         }
         users.splice(userIndex, 1)
-        console.log(users)
         await writer(users)
         res.status(204).end()
     } catch (e) {
