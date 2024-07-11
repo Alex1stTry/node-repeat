@@ -57,6 +57,29 @@ app.delete('/users/:id', async (req, res) => {
     }
 })
 
+app.put('/users/:id', async (req, res) => {
+    try {
+        const users = await reader()
+        const {name, email} = req.body
+        const userId = +req.params.id
+        const index = users.findIndex(user => user.id = userId)
+        if (index === -1) {
+            res.status(404).json('user not found')
+        }
+        users[index] = {
+        ...users[index],
+        name,
+        email
+    }
+        await writer(users)
+        res.status(200).json(users[index])
+
+    } catch (e) {
+        res.status(400).json(e.message)
+    }
+})
+
+
 app.listen(3100, () => {
     console.log('server started')
 })
