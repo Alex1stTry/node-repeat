@@ -1,5 +1,5 @@
 const express = require('express');
-const {reader, addUser, writer} = require("./helper");
+const {reader, writer} = require("./helper");
 
 
 const app = express();
@@ -16,7 +16,7 @@ app.get('/users', async (req, res) => {
         const users = await reader();
         res.json(users)
     } catch (e) {
-        res.status(400).json(e.message)
+        res.status(500).json(e.message)
     }
 })
 
@@ -33,12 +33,15 @@ app.post('/users', async (req, res) => {
         const oldUser = users.find(user => user.email === email)
         if (oldUser) {
             res.status(409).json("User already exist")
-        } else {
-            await addUser(newUser)
+        }
+        else {
+            users.push(newUser)
+            await writer(users)
             res.status(201).json(newUser)
         }
+
     } catch (e) {
-        res.status(400).json(e.message)
+        res.status(500).json(e.message)
     }
 })
 app.delete('/users/:id', async (req, res) => {
@@ -53,7 +56,7 @@ app.delete('/users/:id', async (req, res) => {
         await writer(users)
         res.status(204).end()
     } catch (e) {
-        res.status(400).json(e.message)
+        res.status(500).json(e.message)
     }
 })
 
@@ -67,15 +70,15 @@ app.put('/users/:id', async (req, res) => {
             res.status(404).json('user not found')
         }
         users[index] = {
-        ...users[index],
-        name,
-        email
-    }
+            ...users[index],
+            name,
+            email
+        }
         await writer(users)
         res.status(200).json(users[index])
 
     } catch (e) {
-        res.status(400).json(e.message)
+        res.status(500).json(e.message)
     }
 })
 
