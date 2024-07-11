@@ -35,7 +35,7 @@ app.post('/users', async (req, res) => {
             res.status(409).json("User already exist")
         } else {
             await addUser(newUser)
-            res.json(newUser)
+            res.status(201).json(newUser)
         }
     } catch (e) {
         res.status(400).json(e.message)
