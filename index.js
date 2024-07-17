@@ -19,6 +19,16 @@ app.get('/users', async (req, res) => {
         res.status(500).json(e.message)
     }
 })
+app.get('/users/:id', async (req, res) => {
+    try {
+        const userId = +req.params.id
+        const users = await reader()
+        const user = users.find(user=> user.id === userId)
+        res.status(200).json(user)
+    } catch (e) {
+        res.status(500).json(e.message)
+    }
+})
 
 app.post('/users', async (req, res) => {
     try {
@@ -33,8 +43,7 @@ app.post('/users', async (req, res) => {
         const oldUser = users.find(user => user.email === email)
         if (oldUser) {
             res.status(409).json("User already exist")
-        }
-        else {
+        } else {
             users.push(newUser)
             await writer(users)
             res.status(201).json(newUser)
