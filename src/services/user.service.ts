@@ -8,13 +8,13 @@ class UserService {
   public async create(dto: IUser): Promise<IUser> {
     return await userRepository.create(dto);
   }
-  public async getById(userId: number): Promise<IUser> {
+  public async getById(userId: string): Promise<IUser> {
     return await userRepository.getById(userId);
   }
-  public async deleteById(userId: number): Promise<void> {
+  public async deleteById(userId: string): Promise<void> {
     await userRepository.deleteById(userId);
   }
-  public async updateById(userId: number, dto: IUser): Promise<IUser> {
+  public async updateById(userId: string, dto: IUser): Promise<IUser> {
     return await userRepository.updateById(userId, dto);
   }
 }
