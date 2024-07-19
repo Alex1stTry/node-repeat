@@ -1,5 +1,6 @@
 .idea
 node-repeat.iml
 node_modules
+.env
 
 dist
