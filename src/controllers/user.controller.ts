@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ApiError } from "../errors/api-error";
+import { IUser } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
@@ -14,7 +15,7 @@ class UserController {
   }
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto = req.body as any;
+      const dto = req.body as IUser;
       const newUser = await userService.create(dto);
       res.status(201).json(newUser);
     } catch (e) {
@@ -45,7 +46,7 @@ class UserController {
   public async updateById(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.params.id;
-      const dto = req.body as any;
+      const dto = req.body as IUser;
       const updatedUser = await userService.updateById(userId, dto);
       res.json(updatedUser);
     } catch (e) {

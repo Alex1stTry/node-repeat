@@ -1,15 +1,30 @@
-import Joi from "joi";
+import joi from "joi";
 
-export const userValidator = Joi.object({
-  name: Joi.string().min(3).max(15).required(),
-  age: Joi.number().min(18).max(60).required(),
-  email: Joi.string()
-    .pattern(/^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/)
-    .required(),
-  password: Joi.string()
-    .pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%_*#?&])[A-Za-z\d@$_!%*#?&]{8,}$/)
-    .required(),
-  phone: Joi.string().pattern(
-    /\(?\+[0-9]{1,3}\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\w{1,10}\s?\d{1,6})?/,
-  ),
-});
+import { regex } from "../constants/regex";
+
+export class UserValidator {
+  private static name = joi.string().trim().min(3).max(30).required();
+  private static age = joi.number().min(18).max(60).required();
+  private static email = joi.string().trim().pattern(regex.EMAIL).required();
+  private static password = joi
+    .string()
+    .trim()
+    .pattern(regex.PASSWORD)
+    .required();
+  private static phone = joi.string().trim().pattern(regex.PHONE).optional();
+
+  public static createUser = joi.object({
+    name: UserValidator.name,
+    age: UserValidator.age,
+    email: UserValidator.email,
+    password: UserValidator.password,
+    phone: UserValidator.phone,
+  });
+
+  public static updateUser = joi.object({
+    name: UserValidator.name,
+    age: UserValidator.age,
+    email: UserValidator.email,
+    phone: UserValidator.phone,
+  });
+}
