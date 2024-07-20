@@ -1,2 +1,5 @@
 .idea
 node-repeat.iml
+.env
+dist
+node_modules
