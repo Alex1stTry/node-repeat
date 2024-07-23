@@ -1,4 +1,4 @@
-import { IUser } from "../interfaces/user.inteface";
+import { IUser } from "../interfaces/user.intefrace";
 import { User } from "../models/user.model";
 
 class UserRepository {
@@ -8,8 +8,8 @@ class UserRepository {
   public async getById(userId: string): Promise<IUser> {
     return await User.findById(userId);
   }
-  public async create(dto: IUser): Promise<IUser> {
-    return await User.create(dto);
+  public async create(dto: IUser):Promise<void> {
+    await User.create(dto);
   }
   public async getByParams(params: Partial<IUser>): Promise<IUser> {
     return await User.findOne(params);

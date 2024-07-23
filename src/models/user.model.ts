@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 import { RoleEnum } from "../enums/role.enum";
-import { IUser } from "../interfaces/user.inteface";
+import { IUser } from "../interfaces/user.intefrace";
 
 const { Schema } = mongoose;
 
