@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ITokenPayload } from "../interfaces/token.interface";
+import { ITokenPayload, ITokensPair } from "../interfaces/token.interface";
 import { IUser } from "../interfaces/user.intefrace";
-import { tokenRepository } from "../repositories/token.repository";
 import { authService } from "../services/auth.service";
 
 class AuthController {
@@ -27,8 +26,14 @@ class AuthController {
     }
   }
   public async refresh(req: Request, res: Response, next: NextFunction) {
-    const { userId } = req.res.locals.jwtPayload as ITokenPayload;
-    await tokenRepository.remove(userId);
+    try {
+      const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+      const tokenPair = req.res.locals.tokenPair as ITokensPair;
+      const data = await authService.refresh(jwtPayload, tokenPair);
+      res.status(201).json(data);
+    } catch (e) {
+      next(e);
+    }
   }
 }
 export const authController = new AuthController();

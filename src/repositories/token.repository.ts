@@ -12,7 +12,7 @@ class TokenRepository {
   ): Promise<ITokensPair> {
     return await Token.findOne(params);
   }
-  public async remove(userId: string): Promise<void> {
+  public async deleteById(userId: string): Promise<void> {
     await Token.findByIdAndDelete(userId);
   }
 }

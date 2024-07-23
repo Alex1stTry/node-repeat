@@ -19,7 +19,7 @@ router.post(
 );
 router.post(
   "/refresh",
-  tokenMiddleware.checkAccessToken,
+  tokenMiddleware.checkRefreshToken,
   authController.refresh,
 );
 

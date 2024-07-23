@@ -1,5 +1,9 @@
 import { ApiError } from "../errors/api-error";
-import { ITokenPayload, ITokens } from "../interfaces/token.interface";
+import {
+  ITokenPayload,
+  ITokens,
+  ITokensPair,
+} from "../interfaces/token.interface";
 import { IUser } from "../interfaces/user.intefrace";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
@@ -42,9 +46,20 @@ class AuthService {
       tokens,
     };
   }
-  public async refresh(payload: ITokenPayload): Promise<any> {
-    const { userId } = payload;
-    console.log(userId);
+  public async refresh(
+    jwtPayload: ITokenPayload,
+    oldPair: ITokensPair,
+  ): Promise<ITokens> {
+    const newPair = tokenService.generateTokens({
+      userId: jwtPayload.userId,
+      role: jwtPayload.role,
+    });
+    await tokenRepository.deleteById(oldPair._id);
+    await tokenRepository.create({
+      ...newPair,
+      _userId: jwtPayload.userId,
+    });
+    return newPair;
   }
 }
 export const authService = new AuthService();
