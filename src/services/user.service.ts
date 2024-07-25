@@ -1,19 +1,25 @@
-import { IUser } from "../interfaces/user.intefrace";
+import { IPrivateUser, IPublicUser } from "../interfaces/user.intefrace";
 import { userRepository } from "../repositories/user.repository";
 
 class UserService {
-  public async getList(): Promise<IUser[]> {
+  public async getList(): Promise<IPublicUser[]> {
     return await userRepository.getList();
   }
-  public async getById(userId: string): Promise<IUser> {
+  public async getById(userId: string): Promise<IPublicUser> {
     return await userRepository.getById(userId);
   }
-
-  public async updateById(userId: string, dto: IUser): Promise<IUser> {
-    return await userRepository.updateById(userId, dto);
+  public async getMe(userId: string): Promise<IPrivateUser> {
+    return await userRepository.getMe(userId);
   }
-  public async deleteById(userId: string): Promise<void> {
-    await userRepository.deleteById(userId);
+
+  public async updateMe(
+    userId: string,
+    dto: IPrivateUser,
+  ): Promise<IPrivateUser> {
+    return await userRepository.updateMe(userId, dto);
+  }
+  public async deleteMe(userId: string): Promise<void> {
+    await userRepository.deleteMe(userId);
   }
 }
 

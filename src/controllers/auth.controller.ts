@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ITokenPayload, ITokensPair } from "../interfaces/token.interface";
-import { IUser } from "../interfaces/user.intefrace";
+import {ILogin, IUser} from "../interfaces/user.intefrace";
 import { authService } from "../services/auth.service";
 
 class AuthController {
@@ -18,7 +18,7 @@ class AuthController {
   }
   public async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto = req.body as Partial<IUser>;
+      const dto = req.body as ILogin;
       const result = await authService.login(dto);
       res.json(result);
     } catch (e) {

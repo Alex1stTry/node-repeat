@@ -4,7 +4,7 @@ import {
   ITokens,
   ITokensPair,
 } from "../interfaces/token.interface";
-import { IUser } from "../interfaces/user.intefrace";
+import { ILogin, IUser } from "../interfaces/user.intefrace";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { hashService } from "./hash.service";
@@ -22,9 +22,7 @@ class AuthService {
       throw new ApiError("email is already exist", 409);
     }
   }
-  public async login(
-    dto: Partial<IUser>,
-  ): Promise<{ user: IUser; tokens: ITokens }> {
+  public async login(dto: ILogin): Promise<{ user: IUser; tokens: ITokens }> {
     const user = await userRepository.getByParams({ email: dto.email });
     if (!user) {
       throw new ApiError("Incorrect credentials", 401);

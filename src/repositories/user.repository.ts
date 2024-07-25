@@ -1,26 +1,32 @@
-import { IUser } from "../interfaces/user.intefrace";
+import { IPrivateUser, IPublicUser, IUser } from "../interfaces/user.intefrace";
 import { User } from "../models/user.model";
 
 class UserRepository {
-  public async getList(): Promise<IUser[]> {
+  public async getList(): Promise<IPublicUser[]> {
     return await User.find();
   }
-  public async getById(userId: string): Promise<IUser> {
+  public async getById(userId: string): Promise<IPublicUser> {
     return await User.findById(userId);
   }
-  public async create(dto: IUser):Promise<void> {
+  public async getMe(userId: string): Promise<IPrivateUser> {
+    return await User.findById(userId);
+  }
+  public async create(dto: IUser): Promise<void> {
     await User.create(dto);
   }
   public async getByParams(params: Partial<IUser>): Promise<IUser> {
     return await User.findOne(params);
   }
-  public async updateById(userId: string, dto: IUser): Promise<IUser> {
+  public async updateMe(
+    userId: string,
+    dto: IPrivateUser,
+  ): Promise<IPrivateUser> {
     return await User.findByIdAndUpdate(userId, dto, {
       returnDocument: "after",
     });
   }
-  public async deleteById(userId: string): Promise<void> {
-    await User.deleteOne({ _id: userId });
+  public async deleteMe(userId: string): Promise<void> {
+    await User.findByIdAndDelete(userId);
   }
 }
 export const userRepository = new UserRepository();
