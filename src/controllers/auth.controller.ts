@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ITokenPayload, ITokensPair } from "../interfaces/token.interface";
-import {ILogin, IUser} from "../interfaces/user.intefrace";
+import { ILogin, IUser } from "../interfaces/user.intefrace";
 import { authService } from "../services/auth.service";
 
 class AuthController {
@@ -31,6 +31,15 @@ class AuthController {
       const tokenPair = req.res.locals.tokenPair as ITokensPair;
       const data = await authService.refresh(jwtPayload, tokenPair);
       res.status(201).json(data);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async logOut(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.res.locals.jwtPayload as ITokenPayload;
+      await authService.logOut(userId);
+      res.sendStatus(204);
     } catch (e) {
       next(e);
     }

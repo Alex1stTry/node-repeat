@@ -10,4 +10,6 @@ export const Configs = {
   ACCESS_EXPIRE_IN: process.env.ACCESS_EXPIRE_IN,
   REFRESH_SECRET_KEY: process.env.REFRESH_SECRET_KEY,
   REFRESH_EXPIRE_IN: process.env.REFRESH_EXPIRE_IN,
+  SMTP_EMAIL: process.env.SMTP_EMAIL,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD,
 };

@@ -1,3 +1,4 @@
+import { EmailEnum } from "../enums/email.enum";
 import { ApiError } from "../errors/api-error";
 import {
   ITokenPayload,
@@ -8,6 +9,7 @@ import { ILogin, IUser } from "../interfaces/user.intefrace";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { hashService } from "./hash.service";
+import { mailService } from "./mail.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
@@ -15,13 +17,11 @@ class AuthService {
     await this.isEmailExist(dto.email);
     const hashedPassword = await hashService.hash(dto.password);
     await userRepository.create({ ...dto, password: hashedPassword });
+    await mailService.sendEmail(EmailEnum.WELCOME, dto.email, {
+      name: dto.name,
+    });
   }
-  private async isEmailExist(email: string) {
-    const user = await userRepository.getByParams({ email });
-    if (user) {
-      throw new ApiError("email is already exist", 409);
-    }
-  }
+
   public async login(dto: ILogin): Promise<{ user: IUser; tokens: ITokens }> {
     const user = await userRepository.getByParams({ email: dto.email });
     if (!user) {
@@ -44,6 +44,7 @@ class AuthService {
       tokens,
     };
   }
+
   public async refresh(
     jwtPayload: ITokenPayload,
     oldPair: ITokensPair,
@@ -58,6 +59,22 @@ class AuthService {
       _userId: jwtPayload.userId,
     });
     return newPair;
+  }
+
+  public async logOut(userId: string): Promise<void> {
+    await tokenRepository.deleteByParams({ _userId: userId });
+    const user = await userRepository.getMe(userId);
+    await mailService.sendEmail(EmailEnum.LOG_OUT, user.email, {
+      name: user.name,
+      frontUrl: "http://forms",
+    });
+  }
+
+  private async isEmailExist(email: string) {
+    const user = await userRepository.getByParams({ email });
+    if (user) {
+      throw new ApiError("email is already exist", 409);
+    }
   }
 }
 export const authService = new AuthService();
