@@ -1,6 +1,6 @@
 import { FilterQuery } from "mongoose";
 
-import { ITokensPair } from "../interfaces/token.interface";
+import { ITokensPair } from "../interfaces/tokens.interface";
 import { Token } from "../models/token.model";
 
 class TokenRepository {

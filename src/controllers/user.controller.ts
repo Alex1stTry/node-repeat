@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ApiError } from "../errors/api-error";
-import { ITokenPayload } from "../interfaces/token.interface";
+import { ITokenPayload } from "../interfaces/tokens.interface";
 import { IPrivateUser } from "../interfaces/user.intefrace";
 import { userService } from "../services/user.service";
 

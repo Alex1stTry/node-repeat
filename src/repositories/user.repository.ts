@@ -11,16 +11,13 @@ class UserRepository {
   public async getMe(userId: string): Promise<IPrivateUser> {
     return await User.findById(userId);
   }
-  public async create(dto: IUser): Promise<void> {
-    await User.create(dto);
+  public async create(dto: IUser): Promise<IUser> {
+    return await User.create(dto);
   }
   public async getByParams(params: Partial<IUser>): Promise<IUser> {
     return await User.findOne(params);
   }
-  public async updateMe(
-    userId: string,
-    dto: IPrivateUser,
-  ): Promise<IPrivateUser> {
+  public async updateMe(userId: string, dto: Partial<IUser>): Promise<IUser> {
     return await User.findByIdAndUpdate(userId, dto, {
       returnDocument: "after",
     });

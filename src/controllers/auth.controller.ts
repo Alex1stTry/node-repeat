@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ITokenPayload, ITokensPair } from "../interfaces/token.interface";
+import { ITokenPayload, ITokensPair } from "../interfaces/tokens.interface";
 import { ILogin, IUser } from "../interfaces/user.intefrace";
 import { authService } from "../services/auth.service";
 
@@ -39,6 +39,19 @@ class AuthController {
     try {
       const { userId } = req.res.locals.jwtPayload as ITokenPayload;
       await authService.logOut(userId);
+      res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async verifyAndUpdate(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const payload = req.res.locals.jwtPayload as ITokenPayload;
+      await authService.verifyAndUpdate(payload);
       res.sendStatus(204);
     } catch (e) {
       next(e);

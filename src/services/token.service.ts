@@ -3,7 +3,7 @@ import * as jwt from "jsonwebtoken";
 import { Configs } from "../configs/configs";
 import { TokenType } from "../enums/tokenType.enum";
 import { ApiError } from "../errors/api-error";
-import { ITokenPayload, ITokens } from "../interfaces/token.interface";
+import { ITokenPayload, ITokens } from "../interfaces/tokens.interface";
 
 class TokenService {
   public generateTokens(payload: ITokenPayload): ITokens {

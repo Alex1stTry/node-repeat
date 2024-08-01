@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ActionTokenTypeEnum } from "../enums/action.tokenType.enum";
 import { TokenType } from "../enums/tokenType.enum";
 import { ApiError } from "../errors/api-error";
-import { ITokenPayload } from "../interfaces/token.interface";
+import { ITokenPayload } from "../interfaces/tokens.interface";
+import { actionTokenRepository } from "../repositories/action-token.repository";
 import { tokenRepository } from "../repositories/token.repository";
+import { actionTokenService } from "../services/action.token.service";
 import { tokenService } from "../services/token.service";
 
 class TokenMiddleware {
@@ -31,6 +34,7 @@ class TokenMiddleware {
       next(e);
     }
   }
+
   public async checkRefreshToken(
     req: Request,
     res: Response,
@@ -57,5 +61,26 @@ class TokenMiddleware {
       next(e);
     }
   }
+  public checkActionToken(type: ActionTokenTypeEnum) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const actionToken = req.body.token;
+        if (!actionToken) {
+          throw new ApiError("actionToken isn`t provided", 401);
+        }
+        const payload = actionTokenService.verifyActionToken(actionToken, type);
+
+        const data = await actionTokenRepository.find(actionToken);
+        if (!data) {
+          throw new ApiError("Invalid token", 401);
+        }
+        req.res.locals.jwtPayload = payload;
+        next();
+      } catch (e) {
+        next(e);
+      }
+    };
+  }
 }
+
 export const tokenMiddleware = new TokenMiddleware();

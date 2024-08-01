@@ -1,13 +1,16 @@
+import { ActionTokenTypeEnum } from "../enums/action.tokenType.enum";
 import { EmailEnum } from "../enums/email.enum";
 import { ApiError } from "../errors/api-error";
 import {
   ITokenPayload,
   ITokens,
   ITokensPair,
-} from "../interfaces/token.interface";
+} from "../interfaces/tokens.interface";
 import { ILogin, IUser } from "../interfaces/user.intefrace";
+import { actionTokenRepository } from "../repositories/action-token.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
+import { actionTokenService } from "./action.token.service";
 import { hashService } from "./hash.service";
 import { mailService } from "./mail.service";
 import { tokenService } from "./token.service";
@@ -15,11 +18,29 @@ import { tokenService } from "./token.service";
 class AuthService {
   public async register(dto: IUser): Promise<void> {
     await this.isEmailExist(dto.email);
+
     const hashedPassword = await hashService.hash(dto.password);
-    await userRepository.create({ ...dto, password: hashedPassword });
-    await mailService.sendEmail(EmailEnum.WELCOME, dto.email, {
-      name: dto.name,
+
+    const user = await userRepository.create({
+      ...dto,
+      password: hashedPassword,
     });
+
+    const actionToken = actionTokenService.generateActionToken({
+      userId: user._id,
+      role: user.role,
+    });
+    await Promise.all([
+      actionTokenRepository.create({
+        type: ActionTokenTypeEnum.VERIFY,
+        _userId: user._id,
+        actionToken,
+      }),
+      mailService.sendEmail(EmailEnum.WELCOME, dto.email, {
+        name: dto.name,
+        actionToken,
+      }),
+    ]);
   }
 
   public async login(dto: ILogin): Promise<{ user: IUser; tokens: ITokens }> {
@@ -68,6 +89,9 @@ class AuthService {
       name: user.name,
       frontUrl: "http://forms",
     });
+  }
+  public async verifyAndUpdate(payload: ITokenPayload): Promise<void> {
+    await userRepository.updateMe(payload.userId, { isVerified: true });
   }
 
   private async isEmailExist(email: string) {

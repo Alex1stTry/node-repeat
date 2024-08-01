@@ -15,6 +15,6 @@ export interface ILogin extends Pick<IUser, "email" | "password"> {}
 export interface IPrivateUser
   extends Pick<
     IUser,
-    "name" | "age" | "_id" | "phone" | "email" | "createdAt"
+    "name" | "age" | "_id" | "phone" | "email" | "createdAt" | "isVerified"
   > {}
 export interface IPublicUser extends Pick<IUser, "_id" | "age" | "name"> {}
