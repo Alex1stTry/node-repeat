@@ -57,5 +57,26 @@ class AuthController {
       next(e);
     }
   }
+  public async forgotPass(req: Request, res: Response, next: NextFunction) {
+    try {
+      const payload = req.res.locals.jwtPayload as ITokenPayload;
+      await authService.forgotPass(payload);
+      res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async setForgotPass(req: Request, res: Response, next: NextFunction) {
+    try {
+      const payload = req.res.locals.jwtPayload as ITokenPayload;
+      const dto = req.body as Partial<IUser>;
+
+      await authService.setForgotPass(payload, dto);
+
+      res.json("Password updated");
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 export const authController = new AuthController();

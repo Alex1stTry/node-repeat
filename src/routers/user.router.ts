@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { authController } from "../controllers/auth.controller";
 import { userController } from "../controllers/user.controller";
 import { commonMiddleware } from "../middlewares/common.middleware";
 import { tokenMiddleware } from "../middlewares/token.middleware";
@@ -17,7 +18,7 @@ router.put(
   "/me",
   tokenMiddleware.checkAccessToken,
   commonMiddleware.isBodyValid(UserValidator.updateUser),
-  userController.updateMe,
+  authController.setForgotPass,
 );
 router.delete("/me", tokenMiddleware.checkAccessToken, userController.deleteMe);
 

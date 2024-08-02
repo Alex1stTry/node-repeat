@@ -1,3 +1,4 @@
+import { Configs } from "../configs/configs";
 import { ActionTokenTypeEnum } from "../enums/action.tokenType.enum";
 import { EmailEnum } from "../enums/email.enum";
 import { ApiError } from "../errors/api-error";
@@ -26,10 +27,13 @@ class AuthService {
       password: hashedPassword,
     });
 
-    const actionToken = actionTokenService.generateActionToken({
-      userId: user._id,
-      role: user.role,
-    });
+    const actionToken = actionTokenService.generateActionToken(
+      {
+        userId: user._id,
+        role: user.role,
+      },
+      ActionTokenTypeEnum.VERIFY,
+    );
     await Promise.all([
       actionTokenRepository.create({
         type: ActionTokenTypeEnum.VERIFY,
@@ -60,6 +64,7 @@ class AuthService {
       role: user.role,
     });
     await tokenRepository.create({ ...tokens, _userId: user._id });
+    await actionTokenRepository.deleteActionToken({ _userId: user._id });
     return {
       user,
       tokens,
@@ -94,6 +99,41 @@ class AuthService {
     await userRepository.updateMe(payload.userId, { isVerified: true });
   }
 
+  public async forgotPass(payload: ITokenPayload): Promise<void> {
+    const user = await userRepository.getByParams({ _id: payload.userId });
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
+    const actionToken = actionTokenService.generateActionToken(
+      {
+        userId: user._id,
+        role: user.role,
+      },
+      ActionTokenTypeEnum.FORGOT_PASSWORD,
+    );
+    await actionTokenRepository.create({
+      _userId: user._id,
+      type: ActionTokenTypeEnum.FORGOT_PASSWORD,
+      actionToken,
+    });
+    await mailService.sendEmail(EmailEnum.FORGOT_PASS, user.email, {
+      name: user.name,
+      actionToken,
+      frontUrl: Configs.FRONT_UTL,
+    });
+  }
+
+  public async setForgotPass(
+    payload: ITokenPayload,
+    dto: Partial<IUser>,
+  ): Promise<void> {
+    const user = await userRepository.getByParams({ _id: payload.userId });
+    if (!user) {
+      throw new ApiError("user not found", 404);
+    }
+    const hashedPass = await hashService.hash(dto.password);
+    await userRepository.updateMe(user._id, { password: hashedPass });
+  }
   private async isEmailExist(email: string) {
     const user = await userRepository.getByParams({ email });
     if (user) {

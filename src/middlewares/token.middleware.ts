@@ -64,7 +64,7 @@ class TokenMiddleware {
   public checkActionToken(type: ActionTokenTypeEnum) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const actionToken = req.body.token;
+        const actionToken = req.headers.authorization;
         if (!actionToken) {
           throw new ApiError("actionToken isn`t provided", 401);
         }

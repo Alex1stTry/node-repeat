@@ -38,7 +38,6 @@ class MailService {
     to: string,
     context: EmailPickPayloadType[T],
   ) {
-    context["frontUrl"] = Configs.FRONT_UTL;
     const { subject, template } =
       emailConstants[type as keyof typeof emailConstants];
     const options = {

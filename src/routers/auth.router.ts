@@ -33,5 +33,16 @@ router.post(
   tokenMiddleware.checkActionToken(ActionTokenTypeEnum.VERIFY),
   authController.verifyAndUpdate,
 );
-
+router.post(
+  "/forgot-password",
+  tokenMiddleware.checkAccessToken,
+  commonMiddleware.isBodyValid(UserValidator.forgotPass),
+  authController.forgotPass,
+);
+router.put(
+  "/forgot-password",
+  tokenMiddleware.checkActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD),
+  commonMiddleware.isBodyValid(UserValidator.setForgotPass),
+  authController.setForgotPass,
+);
 export const authRouter = router;
