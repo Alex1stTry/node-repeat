@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ITokenPayload, ITokensPair } from "../interfaces/tokens.interface";
-import { ILogin, IUser } from "../interfaces/user.intefrace";
+import { ILogin, ISetNewPass, IUser } from "../interfaces/user.intefrace";
 import { authService } from "../services/auth.service";
 
 class AuthController {
@@ -73,6 +73,16 @@ class AuthController {
 
       await authService.setForgotPass(payload, dto);
 
+      res.json("New password created");
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async setNewPass(req: Request, res: Response, next: NextFunction) {
+    try {
+      const payload = req.res.locals.jwtPayload;
+      const dto = req.body as ISetNewPass;
+      await authService.setNewPass(dto, payload);
       res.json("Password updated");
     } catch (e) {
       next(e);

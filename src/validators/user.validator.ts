@@ -16,6 +16,10 @@ export class UserValidator {
     .required()
     .trim();
   private static phone = joi.string().pattern(regexConstants.PHONE).optional();
+  private static newPassword = joi
+    .string()
+    .pattern(regexConstants.PASSWORD)
+    .optional();
 
   public static createUser = joi.object({
     name: UserValidator.name.required(),
@@ -40,5 +44,9 @@ export class UserValidator {
   });
   public static setForgotPass = joi.object({
     password: UserValidator.password.required(),
+  });
+  public static setNewPassword = joi.object({
+    password: UserValidator.password.required(),
+    newPassword: UserValidator.newPassword.required(),
   });
 }

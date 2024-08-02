@@ -45,4 +45,10 @@ router.put(
   commonMiddleware.isBodyValid(UserValidator.setForgotPass),
   authController.setForgotPass,
 );
+router.post(
+  "/reset-password",
+  tokenMiddleware.checkAccessToken,
+  commonMiddleware.isBodyValid(UserValidator.setNewPassword),
+  authController.setNewPass,
+);
 export const authRouter = router;

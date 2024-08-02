@@ -18,3 +18,8 @@ export interface IPrivateUser
     "name" | "age" | "_id" | "phone" | "email" | "createdAt" | "isVerified"
   > {}
 export interface IPublicUser extends Pick<IUser, "_id" | "age" | "name"> {}
+
+export interface ISetNewPass {
+  password: string;
+  newPassword: string;
+}

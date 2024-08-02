@@ -7,7 +7,7 @@ import {
   ITokens,
   ITokensPair,
 } from "../interfaces/tokens.interface";
-import { ILogin, IUser } from "../interfaces/user.intefrace";
+import { ILogin, ISetNewPass, IUser } from "../interfaces/user.intefrace";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
@@ -133,6 +133,22 @@ class AuthService {
     }
     const hashedPass = await hashService.hash(dto.password);
     await userRepository.updateMe(user._id, { password: hashedPass });
+  }
+
+  public async setNewPass(
+    dto: ISetNewPass,
+    payload: ITokenPayload,
+  ): Promise<void> {
+    const user = await userRepository.getByParams({ _id: payload.userId });
+    if (!user) {
+      throw new ApiError("user not found", 404);
+    }
+    const validPass = await hashService.compare(dto.password, user.password);
+    if (!validPass) {
+      throw new ApiError("Incorrect credentials", 401);
+    }
+    const newPassHash = await hashService.hash(dto.newPassword);
+    await userRepository.updateMe(user._id, { password: newPassHash });
   }
   private async isEmailExist(email: string) {
     const user = await userRepository.getByParams({ email });
