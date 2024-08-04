@@ -20,6 +20,6 @@ export interface IPrivateUser
 export interface IPublicUser extends Pick<IUser, "_id" | "age" | "name"> {}
 
 export interface ISetNewPass {
-  password: string;
+  oldPassword: string;
   newPassword: string;
 }

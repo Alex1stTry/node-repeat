@@ -9,6 +9,7 @@ import {
 } from "../interfaces/tokens.interface";
 import { ILogin, ISetNewPass, IUser } from "../interfaces/user.intefrace";
 import { actionTokenRepository } from "../repositories/action-token.repository";
+import { oldPassRepository } from "../repositories/old-password.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { actionTokenService } from "./action.token.service";
@@ -139,17 +140,42 @@ class AuthService {
     dto: ISetNewPass,
     payload: ITokenPayload,
   ): Promise<void> {
-    const user = await userRepository.getByParams({ _id: payload.userId });
+    const [user, oldPasswords] = await Promise.all([
+      userRepository.getByParams({ _id: payload.userId }),
+      oldPassRepository.findByUserId(payload.userId),
+    ]);
     if (!user) {
       throw new ApiError("user not found", 404);
     }
-    const validPass = await hashService.compare(dto.password, user.password);
+
+    const validPass = await hashService.compare(dto.oldPassword, user.password);
     if (!validPass) {
       throw new ApiError("Incorrect credentials", 401);
     }
+
+    const allPassword = [...oldPasswords, { password: user.password }];
+    await Promise.all(
+      allPassword.map(async (oldPassword) => {
+        const oldPassExist = await hashService.compare(
+          dto.newPassword,
+          oldPassword.password,
+        );
+        if (oldPassExist) {
+          throw new ApiError(
+            "You have already used this password,pls wait one month if you want to use this one or make new",
+            409,
+          );
+        }
+      }),
+    );
     const newPassHash = await hashService.hash(dto.newPassword);
     await userRepository.updateMe(user._id, { password: newPassHash });
+    await oldPassRepository.create({
+      password: dto.newPassword,
+      _userId: user._id,
+    });
   }
+
   private async isEmailExist(email: string) {
     const user = await userRepository.getByParams({ email });
     if (user) {

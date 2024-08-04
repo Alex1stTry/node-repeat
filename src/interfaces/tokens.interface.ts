@@ -8,6 +8,8 @@ export interface ITokens {
 export interface ITokensPair extends ITokens {
   _id?: string;
   _userId: string | IUser;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 export interface ITokenPayload {
   userId: string;
