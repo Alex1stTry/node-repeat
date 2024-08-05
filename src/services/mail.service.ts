@@ -38,8 +38,7 @@ class MailService {
     to: string,
     context: EmailPickPayloadType[T],
   ) {
-    const { subject, template } =
-      emailConstants[type as keyof typeof emailConstants];
+    const { subject, template } = emailConstants[type];
     const options = {
       to,
       subject,

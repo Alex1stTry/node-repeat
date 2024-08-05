@@ -9,4 +9,5 @@ export type EmailPickPayloadType = {
     "name" | "frontUrl" | "actionToken"
   >;
   [EmailEnum.LOG_OUT]: PickRequired<EmailPayloadType, "name" | "frontUrl">;
+  [EmailEnum.OLD_VISITOR]: PickRequired<EmailPayloadType, "name" | "frontUrl">;
 };
