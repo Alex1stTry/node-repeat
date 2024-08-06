@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ActionTokenTypeEnum } from "../enums/action.tokenType.enum";
-import { TokenType } from "../enums/tokenType.enum";
+import { ActionTokenTypeEnum } from "../enums/action.token-type.enum";
+import { TokenType } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api-error";
 import { ITokenPayload } from "../interfaces/tokens.interface";
 import { actionTokenRepository } from "../repositories/action-token.repository";

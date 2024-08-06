@@ -5,6 +5,7 @@ export interface IUser {
   email: string;
   password: string;
   phone?: string;
+  avatar?: string;
   createdAt?: Date;
   updatedAt?: Date;
   role: string;
@@ -15,7 +16,7 @@ export interface ILogin extends Pick<IUser, "email" | "password"> {}
 export interface IPrivateUser
   extends Pick<
     IUser,
-    "name" | "age" | "_id" | "phone" | "email" | "createdAt" | "isVerified"
+    "name" | "age" | "_id" | "phone" | "email" | "createdAt" | "avatar"
   > {}
 export interface IPublicUser extends Pick<IUser, "_id" | "age" | "name"> {}
 

@@ -1,5 +1,5 @@
 import { Configs } from "../configs/configs";
-import { ActionTokenTypeEnum } from "../enums/action.tokenType.enum";
+import { ActionTokenTypeEnum } from "../enums/action.token-type.enum";
 import { EmailEnum } from "../enums/email.enum";
 import { ApiError } from "../errors/api-error";
 import {

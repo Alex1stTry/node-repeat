@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 
 import { Configs } from "../configs/configs";
-import { ActionTokenTypeEnum } from "../enums/action.tokenType.enum";
+import { ActionTokenTypeEnum } from "../enums/action.token-type.enum";
 import { ApiError } from "../errors/api-error";
 import { ITokenPayload } from "../interfaces/tokens.interface";
 

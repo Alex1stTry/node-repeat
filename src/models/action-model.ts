@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-import { ActionTokenTypeEnum } from "../enums/action.tokenType.enum";
+import { ActionTokenTypeEnum } from "../enums/action.token-type.enum";
 import { IActionToken } from "../interfaces/tokens.interface";
 import { User } from "./user.model";
 

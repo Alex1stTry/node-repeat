@@ -1,4 +1,4 @@
-import { ActionTokenTypeEnum } from "../enums/action.tokenType.enum";
+import { ActionTokenTypeEnum } from "../enums/action.token-type.enum";
 import { IUser } from "./user.intefrace";
 
 export interface ITokens {
