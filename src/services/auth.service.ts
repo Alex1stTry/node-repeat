@@ -65,7 +65,6 @@ class AuthService {
       role: user.role,
     });
     await tokenRepository.create({ ...tokens, _userId: user._id });
-    await actionTokenRepository.deleteActionToken({ _userId: user._id });
     return {
       user,
       tokens,

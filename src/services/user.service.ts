@@ -1,15 +1,19 @@
 import { IPrivateUser, IPublicUser } from "../interfaces/user.intefrace";
 import { userRepository } from "../repositories/user.repository";
+import { UserRepresenter } from "../representers/user.representer";
 
 class UserService {
   public async getList(): Promise<IPublicUser[]> {
-    return await userRepository.getList();
+    const result = await userRepository.getList();
+    return UserRepresenter.toPublicResponseList(result);
   }
   public async getById(userId: string): Promise<IPublicUser> {
-    return await userRepository.getById(userId);
+    const user = await userRepository.getById(userId);
+    return UserRepresenter.toPublicResponseDto(user);
   }
   public async getMe(userId: string): Promise<IPrivateUser> {
-    return await userRepository.getMe(userId);
+    const result = await userRepository.getMe(userId);
+    return UserRepresenter.toPrivateResponseDto(result);
   }
 
   public async updateMe(

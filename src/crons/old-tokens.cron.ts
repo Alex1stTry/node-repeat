@@ -7,8 +7,7 @@ import { tokenRepository } from "../repositories/token.repository";
 dayjs.extend(utc);
 
 const removeOldTokens = async (): Promise<void> => {
-  console.log("token remover start");
-  const tenDays = dayjs().utc().subtract(10, "days");
+  const tenDays = dayjs().utc().subtract(10, "days").toDate();
 
   await tokenRepository.deleteByParams({ createdAt: { $lte: tenDays } });
 };

@@ -1,15 +1,15 @@
-import { IPrivateUser, IPublicUser, IUser } from "../interfaces/user.intefrace";
+import { IUser } from "../interfaces/user.intefrace";
 import { Token } from "../models/token.model";
 import { User } from "../models/user.model";
 
 class UserRepository {
-  public async getList(): Promise<IPublicUser[]> {
+  public async getList(): Promise<IUser[]> {
     return await User.find();
   }
-  public async getById(userId: string): Promise<IPublicUser> {
+  public async getById(userId: string): Promise<IUser> {
     return await User.findById(userId);
   }
-  public async getMe(userId: string): Promise<IPrivateUser> {
+  public async getMe(userId: string): Promise<IUser> {
     return await User.findById(userId);
   }
   public async create(dto: IUser): Promise<IUser> {

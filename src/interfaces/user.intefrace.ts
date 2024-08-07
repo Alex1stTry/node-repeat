@@ -13,11 +13,10 @@ export interface IUser {
 }
 
 export interface ILogin extends Pick<IUser, "email" | "password"> {}
+
 export interface IPrivateUser
-  extends Pick<
-    IUser,
-    "name" | "age" | "_id" | "phone" | "email" | "createdAt" | "avatar"
-  > {}
+  extends Pick<IUser, "name" | "age" | "_id" | "phone" | "email" | "avatar"> {}
+
 export interface IPublicUser extends Pick<IUser, "_id" | "age" | "name"> {}
 
 export interface ISetNewPass {
