@@ -30,7 +30,7 @@ router.post(
   userController.uploadAvatar,
 );
 router.delete(
-  "/me/add-avatar",
+  "/me/delete-avatar",
   tokenMiddleware.checkAccessToken,
   userController.deleteAvatar,
 );

@@ -7,11 +7,17 @@ import {
   ITokens,
   ITokensPair,
 } from "../interfaces/tokens.interface";
-import { ILogin, ISetNewPass, IUser } from "../interfaces/user.intefrace";
+import {
+  ILogin,
+  IPrivateUser,
+  ISetNewPass,
+  IUser,
+} from "../interfaces/user.intefrace";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { oldPassRepository } from "../repositories/old-password.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
+import { UserRepresenter } from "../representers/user.representer";
 import { actionTokenService } from "./action.token.service";
 import { hashService } from "./hash.service";
 import { mailService } from "./mail.service";
@@ -48,7 +54,9 @@ class AuthService {
     ]);
   }
 
-  public async login(dto: ILogin): Promise<{ user: IUser; tokens: ITokens }> {
+  public async login(
+    dto: ILogin,
+  ): Promise<{ user: IPrivateUser; tokens: ITokens }> {
     const user = await userRepository.getByParams({ email: dto.email });
     if (!user) {
       throw new ApiError("Incorrect credentials", 401);
@@ -66,7 +74,7 @@ class AuthService {
     });
     await tokenRepository.create({ ...tokens, _userId: user._id });
     return {
-      user,
+      user: UserRepresenter.toPrivateResponseDto(user),
       tokens,
     };
   }

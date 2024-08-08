@@ -16,7 +16,8 @@ class UserService {
     return UserRepresenter.toPublicResponseDto(user);
   }
   public async getMe(userId: string): Promise<IPrivateUser> {
-    return await userRepository.getMe(userId);
+    const user = await userRepository.getMe(userId);
+    return UserRepresenter.toPrivateResponseDto(user);
   }
 
   public async updateMe(
@@ -32,7 +33,8 @@ class UserService {
     userId: string,
     file: UploadedFile,
   ): Promise<IPrivateUser> {
-    const user = await userRepository.getMe(userId);
+    const user = await userRepository.getById(userId);
+
     const avatar = await s3Service.uploadFile(FolderS3Enum.USER, userId, file);
     const updatedUser = await userRepository.updateMe(userId, { avatar });
     if (user.avatar) {
