@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
 import { ApiError } from "../errors/api-error";
 import { ITokenPayload } from "../interfaces/tokens.interface";
-import { IPrivateUser } from "../interfaces/user.intefrace";
 import { userService } from "../services/user.service";
 
 class UserController {
@@ -42,7 +42,7 @@ class UserController {
   public async updateMe(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req.res.locals.jwtPayload as ITokenPayload;
-      const dto = req.body as IPrivateUser;
+      const dto = req.body as any;
       const updatedUser = await userService.updateMe(userId, dto);
       if (!updatedUser) {
         throw new ApiError("User not found", 404);
@@ -59,6 +59,26 @@ class UserController {
       res.json({
         message: "User was deleted",
       });
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async uploadAvatar(req: Request, res: Response, next: NextFunction) {
+    try {
+      const avatar = req.files?.avatar as UploadedFile;
+      const { userId } = req.res.locals.jwtPayload;
+      const user = await userService.uploadAvatar(userId, avatar);
+      res.status(201).json(user);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async deleteAvatar(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.res.locals.jwtPayload;
+      const user = await userService.deleteAvatar(userId);
+
+      res.status(201).json(user);
     } catch (e) {
       next(e);
     }

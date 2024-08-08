@@ -1,6 +1,8 @@
 import { Router } from "express";
 
+import { avatarConstants } from "../constants/avatar.constants";
 import { userController } from "../controllers/user.controller";
+import { avatarMiddleware } from "../middlewares/avatarMiddleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
 import { tokenMiddleware } from "../middlewares/token.middleware";
 import { UserValidator } from "../validators/user.validator";
@@ -24,7 +26,13 @@ router.delete("/me", tokenMiddleware.checkAccessToken, userController.deleteMe);
 router.post(
   "/me/add-avatar",
   tokenMiddleware.checkAccessToken,
-  // userController.uploadAvatar,
+  avatarMiddleware.isAvatarValid("avatar", avatarConstants),
+  userController.uploadAvatar,
+);
+router.delete(
+  "/me/add-avatar",
+  tokenMiddleware.checkAccessToken,
+  userController.deleteAvatar,
 );
 
 export const userRouter = router;

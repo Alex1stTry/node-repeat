@@ -1,3 +1,4 @@
+import { ObjectCannedACL } from "@aws-sdk/client-s3/dist-types/models";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -22,5 +23,5 @@ export const Configs = {
   AWS_ACCESS: process.env.AWS_ACCESS,
   AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
   AWS_ENDPOINT: process.env.AWS_ENDPOINT,
-  S3_ACL: process.env.S3_ACL,
+  S3_ACL: process.env.S3_ACL as ObjectCannedACL,
 };

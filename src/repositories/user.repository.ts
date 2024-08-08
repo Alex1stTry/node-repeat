@@ -1,6 +1,7 @@
-import { IUser } from "../interfaces/user.intefrace";
+import { IPrivateUser, IUser } from "../interfaces/user.intefrace";
 import { Token } from "../models/token.model";
 import { User } from "../models/user.model";
+import { UserRepresenter } from "../representers/user.representer";
 
 class UserRepository {
   public async getList(): Promise<IUser[]> {
@@ -9,8 +10,9 @@ class UserRepository {
   public async getById(userId: string): Promise<IUser> {
     return await User.findById(userId);
   }
-  public async getMe(userId: string): Promise<IUser> {
-    return await User.findById(userId);
+  public async getMe(userId: string): Promise<IPrivateUser> {
+    const user = await User.findById(userId);
+    return UserRepresenter.toPrivateResponseDto(user);
   }
   public async create(dto: IUser): Promise<IUser> {
     return await User.create(dto);
@@ -18,10 +20,14 @@ class UserRepository {
   public async getByParams(params: Partial<IUser>): Promise<IUser> {
     return await User.findOne(params);
   }
-  public async updateMe(userId: string, dto: Partial<IUser>): Promise<IUser> {
-    return await User.findByIdAndUpdate(userId, dto, {
+  public async updateMe(
+    userId: string,
+    dto: Partial<IUser>,
+  ): Promise<IPrivateUser> {
+    const user = await User.findByIdAndUpdate(userId, dto, {
       returnDocument: "after",
     });
+    return UserRepresenter.toPrivateResponseDto(user);
   }
   public async deleteMe(userId: string): Promise<void> {
     await User.findByIdAndDelete(userId);

@@ -1,4 +1,4 @@
-export enum PathS3Enum {
+export enum FolderS3Enum {
   USER = "user",
   CARS = "cars",
 }

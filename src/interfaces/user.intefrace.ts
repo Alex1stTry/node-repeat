@@ -17,7 +17,8 @@ export interface ILogin extends Pick<IUser, "email" | "password"> {}
 export interface IPrivateUser
   extends Pick<IUser, "name" | "age" | "_id" | "phone" | "email" | "avatar"> {}
 
-export interface IPublicUser extends Pick<IUser, "_id" | "age" | "name"> {}
+export interface IPublicUser
+  extends Pick<IUser, "_id" | "age" | "name" | "avatar"> {}
 
 export interface ISetNewPass {
   oldPassword: string;
