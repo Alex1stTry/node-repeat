@@ -33,12 +33,13 @@ class UserService {
     file: UploadedFile,
   ): Promise<IPrivateUser> {
     const user = await userRepository.getMe(userId);
+    const avatar = await s3Service.uploadFile(FolderS3Enum.USER, userId, file);
+    const updatedUser = await userRepository.updateMe(userId, { avatar });
     if (user.avatar) {
       await s3Service.deleteAvatar(user.avatar);
     }
-    const avatar = await s3Service.uploadFile(FolderS3Enum.USER, userId, file);
 
-    return await userRepository.updateMe(userId, { avatar });
+    return updatedUser;
   }
   public async deleteAvatar(userId: string): Promise<IPrivateUser> {
     const user = await userRepository.getById(userId);
