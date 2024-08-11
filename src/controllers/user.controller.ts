@@ -3,12 +3,14 @@ import { UploadedFile } from "express-fileupload";
 
 import { ApiError } from "../errors/api-error";
 import { ITokenPayload } from "../interfaces/tokens.interface";
+import { IUserQueryList } from "../interfaces/user.intefrace";
 import { userService } from "../services/user.service";
 
 class UserController {
   public async getList(req: Request, res: Response, next: NextFunction) {
     try {
-      const users = await userService.getList();
+      const query = req.query as IUserQueryList;
+      const users = await userService.getList(query);
       res.json(users);
     } catch (e) {
       next(e);

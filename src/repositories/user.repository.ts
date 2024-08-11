@@ -1,10 +1,45 @@
-import { IPrivateUser, IUser } from "../interfaces/user.intefrace";
+import { FilterQuery, SortOrder } from "mongoose";
+
+import { userOrderByEnum } from "../enums/user-orderBy.enum";
+import { ApiError } from "../errors/api-error";
+import {
+  IPrivateUser,
+  IUser,
+  IUserQueryList,
+} from "../interfaces/user.intefrace";
 import { Token } from "../models/token.model";
 import { User } from "../models/user.model";
 
 class UserRepository {
-  public async getList(): Promise<IUser[]> {
-    return await User.find();
+  public async getList(query: IUserQueryList): Promise<[IUser[], number]> {
+    const skip = (query.page - 1) * query.limit;
+
+    const filterUser: FilterQuery<IUser> = { isVerified: true };
+    // if (query.search) {
+    //   filterUser.$or = [
+    //     { name: { $regex: query.search, $options: "i" } },
+    //     { email: { $regex: query.search, $options: "i" } },
+    //   ];
+    // }
+    const sortUser: { [key: string]: SortOrder } = {};
+    switch (query.orderBy) {
+      case userOrderByEnum.ID:
+        sortUser.id = query.order;
+        break;
+      case userOrderByEnum.AGE:
+        sortUser.age = query.order;
+        break;
+      case userOrderByEnum.NAME:
+        sortUser.name = query.order;
+        break;
+      default:
+        throw new ApiError("Invalid orderBy", 400);
+    }
+
+    return await Promise.all([
+      User.find(filterUser).limit(query.limit).skip(skip).sort(sortUser),
+      User.countDocuments(filterUser),
+    ]);
   }
   public async getById(userId: string): Promise<IUser> {
     return await User.findById(userId);

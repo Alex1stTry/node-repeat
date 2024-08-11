@@ -1,3 +1,6 @@
+import { userOrderEnum } from "../enums/order.enum";
+import { userOrderByEnum } from "../enums/user-orderBy.enum";
+
 export interface IUser {
   _id: string;
   name: string;
@@ -23,4 +26,17 @@ export interface IPublicUser
 export interface ISetNewPass {
   oldPassword: string;
   newPassword: string;
+}
+
+export interface IUserQueryList {
+  page?: number;
+  limit?: number;
+  search?: string;
+  order?: userOrderEnum;
+  orderBy?: userOrderByEnum;
+}
+
+export interface IUserResponseList extends IUserQueryList {
+  data: IPublicUser[];
+  total: number;
 }

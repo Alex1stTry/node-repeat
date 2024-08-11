@@ -1,5 +1,11 @@
 import { Configs } from "../configs/configs";
-import { IPrivateUser, IPublicUser, IUser } from "../interfaces/user.intefrace";
+import {
+  IPrivateUser,
+  IPublicUser,
+  IUser,
+  IUserQueryList,
+  IUserResponseList,
+} from "../interfaces/user.intefrace";
 
 export class UserRepresenter {
   public static toPrivateResponseDto(data: IUser): IPrivateUser {
@@ -20,7 +26,15 @@ export class UserRepresenter {
       avatar: data.avatar ? `${Configs.AWS_ENDPOINT}/${data.avatar}` : null,
     };
   }
-  public static toPublicResponseList(users: IUser[]) {
-    return users.map((user) => this.toPublicResponseDto(user));
+  public static toPublicResponseList(
+    data: IUser[],
+    total: number,
+    query: IUserQueryList,
+  ): IUserResponseList {
+    return {
+      ...query,
+      data: data.map((user) => this.toPublicResponseDto(user)),
+      total,
+    };
   }
 }

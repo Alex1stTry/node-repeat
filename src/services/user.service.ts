@@ -1,15 +1,20 @@
 import { UploadedFile } from "express-fileupload";
 
 import { FolderS3Enum } from "../enums/folder.s3.enum";
-import { IPrivateUser, IPublicUser } from "../interfaces/user.intefrace";
+import {
+  IPrivateUser,
+  IPublicUser,
+  IUserQueryList,
+  IUserResponseList,
+} from "../interfaces/user.intefrace";
 import { userRepository } from "../repositories/user.repository";
 import { UserRepresenter } from "../representers/user.representer";
 import { s3Service } from "./s3.service";
 
 class UserService {
-  public async getList(): Promise<IPublicUser[]> {
-    const result = await userRepository.getList();
-    return UserRepresenter.toPublicResponseList(result);
+  public async getList(query: IUserQueryList): Promise<IUserResponseList> {
+    const [users, total] = await userRepository.getList(query);
+    return UserRepresenter.toPublicResponseList(users, total, query);
   }
   public async getById(userId: string): Promise<IPublicUser> {
     const user = await userRepository.getById(userId);
